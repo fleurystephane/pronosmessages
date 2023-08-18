@@ -1,0 +1,85 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:eu-west-3:883128375204:task-definition/TDNPronos:3",
+    "containerDefinitions": [
+        {
+            "name": "pronos-api",
+            "image": "docker.io/sfleury72/pronosapi:0.0.2-SNAPSHOT",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "DB_USERNAME",
+                    "value": "hlomemka"
+                },
+                {
+                    "name": "DB_URL",
+                    "value": "lucky.db.elephantsql.com/hlomemka"
+                },
+                {
+                    "name": "DB_PWD",
+                    "value": "IX3w2KHdENzrY2bltj6H3LyyO2q1TGWU"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/TDNPronos",
+                    "awslogs-region": "eu-west-3",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ],
+    "family": "TDNPronos",
+    "taskRoleArn": "arn:aws:iam::883128375204:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::883128375204:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 3,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "runtimePlatform": {
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2023-06-20T04:03:00.961Z",
+    "registeredBy": "arn:aws:iam::883128375204:user/stephaneF",
+    "tags": []
+}

@@ -1,0 +1,25 @@
+version: '3'
+services:
+
+  db-pronos:
+    image: "postgres:9.6-alpine"
+    container_name: db-pronos
+    volumes:
+      - pronos-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=pronos
+      - POSTGRES_USER=pronos
+      - POSTGRES_PASSWORD=password
+
+  pronos-api:
+    image: sfleury72/pronosapi
+    container_name: pronos-api
+    ports:
+      - 8080:8080
+    links:
+      - db-pronos
+
+volumes:
+  pronos-data:
