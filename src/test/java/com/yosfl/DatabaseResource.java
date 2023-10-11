@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class DatabaseResource implements QuarkusTestResourceLifecycleManager {
     private static final PostgreSQLContainer DATABASE = new PostgreSQLContainer<>("postgres:13.1")
-            .withDatabaseName("pronos")
-            .withUsername("pronos")
+            .withDatabaseName("conversations")
+            .withUsername("conversations")
             .withPassword("password")
             .withExposedPorts(5432);/*
             .withCreateContainerCmdModifier(cmd -> cmd.withHostConfig(

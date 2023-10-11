@@ -14,31 +14,8 @@ import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 
 
-@OpenAPIDefinition(
-        tags = {
-                @Tag(name="Users", description="Operations related to users"),
-                @Tag(name="Publications", description="Operations related to publications"),
-                @Tag(name="Connections", description = "Operations related to the connections")
-        },
-        info = @Info(
-                title="L'API des Pronos!!!",
-                version = "0.0.9",
-                contact = @Contact(
-                        name = "API Pronos developer",
-                        url = "",
-                        email = "sfleury72@gmail.com")
-                ),
-        security = @SecurityRequirement(name = "bearerAuth")
-)
-@SecuritySchemes(
-        @SecurityScheme(
-                apiKeyName = "bearerAuth",
-                type = SecuritySchemeType.HTTP,
-                scheme = "bearer",
-                bearerFormat = "JWT"
-        )
-)
-@ApplicationPath("/shareskillsapi")
+
+@ApplicationPath("/messagesapi")
 public class MyApplication extends Application {
 
 }

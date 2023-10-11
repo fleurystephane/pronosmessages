@@ -4,87 +4,50 @@
 
 1. Build de la base de données
 
-    `docker build -f src/main/docker/DockerfilePGSQL -t sfleury72/pronosdb .`
+    `docker build -f src/main/docker/DockerfilePGSQL -t sfleury72/conversationsdb .`
 2. Build de l'API
    
    Pré-requis : `mvn clean package` puis
 
-    `docker build -f src/main/docker/Dockerfile.jvm -t sfleury72/pronosapi:0.0.1-SNAPSHOT .`
+    `docker build -f src/main/docker/Dockerfile.jvm -t sfleury72/conversationsapi:0.1.0-SNAPSHOT .`
  
 
 
 ## Soumission des images Docker
 
-docker push sfleury72/pronosdb
+docker push sfleury72/conversationsdb
 
-docker push sfleury72/pronosapi:1.1.0-SNAPSHOT
+docker push sfleury72/conversationsapi:1.1.0-SNAPSHOT
 
 ## Récupération des images Docker
 
-1. Image contenant la base de données pronos :
+1. Image contenant la base de données conversations :
 
-   `docker pull sfleury72/pronosdb:latest`
+   `docker pull sfleury72/conversationsdb:latest`
 
-2. Image contenant le service Keycloak pronos :
 
-   `docker pull sfleury72/pronoskeycloak:latest`
+2. Image contenant l'API conversations :
 
-3. Image contenant l'API pronos :
-
-   `docker pull sfleury72/pronosapi:latest`
+   `docker pull sfleury72/conversationsapi:latest`
 
 
 ## Exécution des images
 
-1. Création d'un container pour pronosdb
+1. Création d'un container pour conversationsdb
 
-   `docker run --name db-pronos -d -p 5432:5432 sfleury72/pronosdb:latest`
+   `docker run --name db-conversations --network mon_reseau \
+    -d -p 5433:5432 sfleury72/conversationsdb:latest`
 
 
 2. Création d'un container pour l'API
 
-      2.1 Container sur la DB du container pronosdb
-      `docker run --name api-container -d -p 8080:8080 -p 8443:8443 -e DB_URL=db-pronos/pronos \
-        -e DB_USERNAME=pronos -e DB_PWD=password -e LOGS_LEVEL=INFO \
-        -e S3_BUCKETURL=https://publicationsimages-stagging.s3.eu-west-3.amazonaws.com/ \
-         -e S3_BUCKETNAME=publicationsimages-stagging \
-        --link db-pronos sfleury72/pronosapi:0.0.4-SNAPSHOT`
+      2.1 Container sur la DB du container conversationsdb
+      `docker run --name api-conv-container -d -p 8081:8080 -p 8444:8443 -e DB_URL=db-conversations/conversations \
+        -e DB_USERNAME=conversations -e DB_PWD=password -e LOGS_LEVEL=INFO \
+        -e USERS_API_URL=http://api-container:8080/shareskillsapi \
+       --network mon_reseau sfleury72/conversationsapi:0.1.0-SNAPSHOT`
 
-      2.2 Container sur la DB ELEPHANT
-      `docker run --name api-container -d -p 8080:8080 -e DB_URL=lucky.db.elephantsql.com/hlomemka \
-        -e DB_USERNAME=hlomemka -e DB_PWD=QtKyl-iEhZmMuumTi8F9amaXmZvP-NQZ sfleury72/pronosapi:X.Y.Z`
-   
-----------------------------
-COMMAND KO :
-docker run -d --name mykeycloak-dev -p 8080:8080 \
---link mydbhost \
--v /Users/steph/mesdevs/pronos/src/main/docker/realm:/opt/keycloak/data/import \
-sfleury72/pronoskeycloak \
-start-dev --hostname-port=8080 --import-realm
+         2.2 Container sur la DB ELEPHANT
+         `docker run --name api-conv-container -d -p 8081:8080 -e DB_URL=trumpet.db.elephantsql.com/vutbwawl \
+           -e DB_USERNAME=vutbwawl -e DB_PWD=JMTAmEy0cBQeDqBHis9CjwzNcMQ5Ccm8 sfleury72/conversationsapi:X.Y.Z`
 
-docker run --name keycloak_unoptimized -p 8080:8080 \
--e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=change_me \
-quay.io/keycloak/keycloak:latest \
-start-dev
-
-----------------------------
-
-## Appels de l'API
-
-1. GET http://localhost:8080/api/users
-2. GET http://localhost:8080/api/users/1
-3. GET http://localhost:8080/api/users/search/jo
-4. pour créer un user :
-
-`POST http://localhost:8080/api/users
-body :
-{
-"name" : "tintin",
-"username" : "titi",
-"email" : "titi@gmail.com",
-"description" : "Je suis Tintin"
-}`
-
-5. Appel de keycloak : 
-
-   `GET http://localhost:3000/...(TODO)`

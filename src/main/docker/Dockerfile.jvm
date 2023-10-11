@@ -86,12 +86,11 @@ COPY --chown=185 target/quarkus-app/*.jar /deployments/
 COPY --chown=185 target/quarkus-app/app/ /deployments/app/
 COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
 
-EXPOSE 8080
+EXPOSE 8081
 USER 185
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
-ENV AWS_ACCESS_KEY_ID=AKIA43HUNS6SCYQMAKMW
-ENV AWS_REGION=eu-west-3
-ENV AWS_SECRET_ACCESS_KEY=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
+
+ENV USERS_API_URL="http://localhost:8080/shareskillsapi"
 
 

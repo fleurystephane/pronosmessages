@@ -2,8 +2,8 @@
 FROM postgres:9.6-alpine
 
 # Définir les variables d'environnement pour le nom de la base de données, le nom d'utilisateur et le mot de passe
-ENV POSTGRES_DB=pronos
-ENV POSTGRES_USER=pronos
+ENV POSTGRES_DB=conversations
+ENV POSTGRES_USER=conversations
 ENV POSTGRES_PASSWORD=password
 
 # Copier le fichier SQL pour initialiser la base de données

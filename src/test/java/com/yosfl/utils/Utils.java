@@ -27,9 +27,38 @@ public class Utils {
     public static final String MIKEBROWN_TOKEN = JwtBuilder.buildJwt(MIKEBROWN_EMAIL);
     public static final int MIKEBROWN_ID = 5;
     public static final String PABLO_EMAIL = "tata@example.com";
-    public static final String PABLO_TOKEN = JwtBuilder.buildJwt(PABLO_EMAIL);
+    public static final String PABLO_TOKEN  = JwtBuilder.buildJwt(PABLO_EMAIL);
     public static final int PABLO_ID = 6;
 
+    public static Response retrieveConversationsForAlice(){
+        return retrieveConversationsForUser(ALICELEE_TOKEN, ALICELEE_EMAIL);
+    }
+
+    public static Response retrieveConversationsForUser(String token, String email) {
+        return getHeaderOctetStream(token, email)
+                .when()
+                .get("/messagesapi/v1/conversations")
+                .then().extract().response();
+    }
+
+    public static Response AlicePostMessageToConversation(String body, long idConversation){
+        return postMessageToConversation(ALICELEE_TOKEN, ALICELEE_EMAIL, body, idConversation);
+    }
+
+    private static Response postMessageToConversation(String token, String email, String body, long idConversation) {
+        return given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + token)
+                .header("email", email)
+                .and()
+                .body(body)
+                .post("/messagesapi/v1/conversations/"+idConversation+"/messages")
+                .then()
+                .extract().response();
+    }
+
+
+    //----------------------- TO DELETE ------------------------
     public static Response johndoePostPublication(String content){
         return postRestPublication(JOHNDOE_TOKEN, JOHNDOE_EMAIL, content);
     }

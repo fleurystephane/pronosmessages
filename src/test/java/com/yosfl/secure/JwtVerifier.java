@@ -65,7 +65,8 @@ public class JwtVerifier {
         //Le jeton pour tata@example.com : eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRhdGFAZXhhbXBsZS5jb20ifQ.ZxHZBjy_2yRTE9tDVizgoiBTehz7D9DxYIDNYNl8NUw
         //Le jeton pour janesmith@example.com : eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImphbmVzbWl0aEBleGFtcGxlLmNvbSJ9.cGgDyzzc-Yj6hPvht6PmCHGHkAT3UAD61TtoGY5iAAw
         //Le jeton pour lambdaS3@example.com : eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImxhbWJkYVMzQGV4YW1wbGUuY29tIn0.Wt1fxVemxwxzbE_PNvWGhqdFdTAtt1fKYbIgFjT8GJ4
-        System.out.println("Le jeton pour  : " + JwtBuilder.buildJwt("lambdaS3@example.com"));
+        //Le jeton pour tecnical@example.com : eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlY25pY2FsQGV4YW1wbGUuY29tIn0.Wt3KgNVlQKr7BR_Yhx9hHWh-oZjyf9luzkmOrXwjjow
+        System.out.println("Le jeton pour  : " + JwtBuilder.buildJwt("tecnical@example.com"));
         String res = new JwtVerifier().extractBucketKey("https://publicationspronosbucket1transformed.s3.eu-west-3.amazonaws.com/0e409f9f-14f1-41df-acac-3631b6fa3134-189.jpeg");
         System.out.println(res);
 
