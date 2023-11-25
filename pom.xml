@@ -57,6 +57,15 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-websockets</artifactId>
+    </dependency>
+    <!-- dependency>
+      <groupId>cn.geminis.dependency</groupId>
+      <artifactId>geminis-dependency-basic</artifactId>
+      <version>1.4.1</version>
+    </dependency> -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
     <dependency>

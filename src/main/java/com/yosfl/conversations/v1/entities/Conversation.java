@@ -1,4 +1,4 @@
-package com.yosfl.conversations.v1.entities.infra;
+package com.yosfl.conversations.v1.entities;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;

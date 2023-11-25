@@ -44,8 +44,9 @@ docker push sfleury72/conversationsapi:1.1.0-SNAPSHOT
       2.1 Container sur la DB du container conversationsdb
       `docker run --name api-conv-container -d -p 8081:8080 -p 8444:8443 -e DB_URL=db-conversations/conversations \
         -e DB_USERNAME=conversations -e DB_PWD=password -e LOGS_LEVEL=INFO \
-        -e USERS_API_URL=http://api-container:8080/shareskillsapi \
-       --network mon_reseau sfleury72/conversationsapi:0.1.0-SNAPSHOT`
+        -e USERS_API_URL=http://api-container:8080/shareskillsapi/ \
+        -e DB_GENERATION=update \
+       --net mon_reseau sfleury72/conversationsapi:0.1.0-SNAPSHOT`
 
          2.2 Container sur la DB ELEPHANT
          `docker run --name api-conv-container -d -p 8081:8080 -e DB_URL=trumpet.db.elephantsql.com/vutbwawl \

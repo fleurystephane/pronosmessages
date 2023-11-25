@@ -90,7 +90,8 @@ EXPOSE 8081
 USER 185
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
-
+ENV JWT_SECRET_KEY="maClefSecreteNouvelle"
+ENV JWT_ISSUER="pronosBackEndAPI"
 ENV USERS_API_URL="http://localhost:8080/shareskillsapi"
 
 

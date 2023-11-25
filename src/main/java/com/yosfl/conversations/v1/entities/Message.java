@@ -1,16 +1,13 @@
-package com.yosfl.conversations.v1.entities.infra;
+package com.yosfl.conversations.v1.entities;
 
 import com.yosfl.common.utils.CommonUtility;
+import com.yosfl.conversations.v1.entities.Conversation;
 import com.yosfl.conversations.v1.entities.dtos.MessageDTO;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @Table(name="message")

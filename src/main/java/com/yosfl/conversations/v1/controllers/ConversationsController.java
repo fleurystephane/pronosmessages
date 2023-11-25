@@ -1,5 +1,6 @@
 package com.yosfl.conversations.v1.controllers;
 
+import com.yosfl.conversations.v1.entities.dtos.ContentExSent;
 import com.yosfl.conversations.v1.entities.dtos.ConversationInitiateDTO;
 import com.yosfl.conversations.v1.entities.dtos.MessageDTO;
 import com.yosfl.conversations.v1.entities.dtos.MessageInputDTO;
@@ -105,6 +106,41 @@ public class ConversationsController {
         }
         catch (ObjectNotFoundException e) {
             throw new PronosNotFoundException(e.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("/disable")
+    public Response disableConversation(@QueryParam("userid") String userId,
+                                        @QueryParam("creatorid") String creatorId,
+                                        @Context HttpHeaders headers){
+        try {
+            return (conversationsRepository.disableConversation(
+                    userId, creatorId,
+                    headers.getHeaderString("email")) ? Response.status(Response.Status.ACCEPTED).build():
+                    Response.status(Response.Status.NOT_FOUND).build()
+            );
+        }catch(NumberFormatException nfe){
+            return Response.status(Response.Status.BAD_REQUEST).entity("id conversation ou id message non num").build();
+        }
+        catch (ObjectNotFoundException e) {
+            throw new PronosNotFoundException(e.getMessage());
+        }
+    }
+
+    @POST
+    @Path("/contentex/{idContentEx}")
+    public Response sendContentEx(@PathParam("idContentEx") String idContentEx,
+                                  @QueryParam("idAuthor") String idAuthor,
+                                  @Context HttpHeaders headers){
+        try {
+            long res = conversationsRepository.sendContentEx(
+                    Long.parseLong(idContentEx),
+                    Long.parseLong(idAuthor),
+                    headers.getHeaderString("email"));
+            return Response.ok().entity(new ContentExSent(res)).build();
+        }catch(NumberFormatException nfe){
+            return Response.status(Response.Status.BAD_REQUEST).entity("id content exclusif ou author non num").build();
         }
     }
 }

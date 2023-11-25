@@ -1,0 +1,8 @@
+sk_test_51O0cmxGOMvUVbCQgYsbPXXOs6UZYKsgfGY3yP5JPBvr4sUkxjN5rUv0r4MAykinrJiAOfjLfWH0zaS4CHJnehIHB00dpGsIUE4
+
+curl https://api.stripe.com/v1/accounts \
+  -u "sk_test_51O0cmxGOMvUVbCQgYsbPXXOs6UZYKsgfGY3yP5JPBvr4sUkxjN5rUv0r4MAykinrJiAOfjLfWH0zaS4CHJnehIHB00dpGsIUE4" \
+  -d country=FR \
+  -d type=custom \
+  -d "capabilities[card_payments][requested]"=true \
+  -d "capabilities[transfers][requested]"=true

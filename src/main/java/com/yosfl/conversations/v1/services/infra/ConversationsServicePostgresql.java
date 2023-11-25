@@ -1,18 +1,16 @@
 package com.yosfl.conversations.v1.services.infra;
 
 import com.yosfl.conversations.v1.entities.dtos.*;
-import com.yosfl.conversations.v1.entities.infra.Conversation;
-import com.yosfl.conversations.v1.entities.infra.Message;
+import com.yosfl.conversations.v1.entities.Conversation;
+import com.yosfl.conversations.v1.entities.Message;
 import com.yosfl.conversations.v1.services.ConversationsService;
 import com.yosfl.exceptions.ObjectNotFoundException;
 import com.yosfl.exceptions.PronosNotAuthorizedException;
-import com.yosfl.exceptions.PronosNotFoundException;
 import io.quarkus.logging.Log;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -22,7 +20,8 @@ public class ConversationsServicePostgresql implements ConversationsService {
     @Override
     public List<ConversationDTO> getAllConversationsByUser(UserExt userConnected) {
         List<Conversation> conversations =
-                Conversation.list("userId = ?1 or creatorId = ?1", userConnected.getId());
+                Conversation.list("userId = ?1 or creatorId = ?1",
+                        userConnected.getId());
 
         List<ConversationDTO> result = new ArrayList<>();
         for (Conversation conversation: conversations) {
@@ -36,20 +35,26 @@ public class ConversationsServicePostgresql implements ConversationsService {
                 messageDTO.setCreationDate(lastMessage.get().getCreationDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
                 messageDTO.setText(lastMessage.get().getText());
                 messageDTO.setAuthorId(lastMessage.get().getAuthorId());
+                messageDTO.setDeleted(lastMessage.get().isDeleted());
                 conv.setLastMessage(messageDTO);
 
                 conv.setInterlocuteurId(
                         (Objects.equals(userConnected.getId(), conversation.getCreatorId()) ? conversation.getUserId() : conversation.getCreatorId())
                         );
                 conv.setId(conversation.getId());
+                conv.setActive(conversation.isActive());
                 result.add(conv);
             }
         }
 
+        result.sort((o1, o2) -> o2.getLastMessage().getCreationDate().compareTo(
+                o1.getLastMessage().getCreationDate()
+        ));
         return result;
     }
 
     @Override
+    @Transactional
     public MessageDTO addMessage(MessageInputDTO input, Long idConversation, long idUserConnected)
             throws ObjectNotFoundException {
         Conversation conversation = Conversation.findById(idConversation);
@@ -86,7 +91,7 @@ public class ConversationsServicePostgresql implements ConversationsService {
     @Override
     public List<MessageDTO> getAllMessagesFromConversation(long idConversation) {
         List<Message> messages = Message.list("conversation.id",
-                Sort.by("creationDate"), idConversation);
+                Sort.by("creationDate", Sort.Direction.Descending), idConversation);
 
         List<MessageDTO> result = new ArrayList<>(messages.size());
         for (Message mess : messages){
@@ -99,5 +104,43 @@ public class ConversationsServicePostgresql implements ConversationsService {
             result.add(dto);
         }
         return result;
+    }
+
+    @Override
+    public Optional<Conversation> getConversation(long userId, long creatorId) {
+        return Conversation.find("userId = ?1 and creatorId = ?2", userId, creatorId)
+                .singleResultOptional();
+    }
+
+    @Override
+    public boolean disable(long userId, long creatorId) throws ObjectNotFoundException {
+        Conversation conversation =
+                Conversation.find("userId = ?1 and creatorId = ?2", userId, creatorId)
+                        .singleResult();
+
+        if(null == conversation){
+            throw new ObjectNotFoundException("Conversation non trouvée");
+        }
+        conversation.setActive(false);
+        conversation.persistAndFlush();
+        return true;
+    }
+
+    public long sendContentExToAll(long idContentEx, long idAuthor) {
+        MessageInputDTO input = new MessageInputDTO();
+        input.setText("@ContentEx "+ idContentEx);
+
+        List<Conversation> conversations =
+                Conversation.list("creatorId = ?1", idAuthor);
+        long res = 0;
+        for(Conversation conversation : conversations){
+            try {
+                addMessage(input, conversation.getId(), idAuthor);
+                res++;
+            } catch (ObjectNotFoundException e) {
+                Log.warn("sendContentEx... conversation non trouvée "+conversation.getId());
+            }
+        }
+        return res;
     }
 }

@@ -35,19 +35,23 @@ public class JwtTokenNeededFilter implements ContainerRequestFilter {
         }
 
         if (token != null) {
-            JwtParserBuilder builder = Jwts.parserBuilder()
-                    .setSigningKey(MA_CLEF_SECRETE.getBytes());
-            builder.require(SignatureAlgorithm.class.getName(), SignatureAlgorithm.HS256);
+            try {
+                JwtParserBuilder builder = Jwts.parserBuilder()
+                        .setSigningKey(JWTSecret.SECRETKEY);
+                builder.require(SignatureAlgorithm.class.getName(), SignatureAlgorithm.HS256);
 
-            JWTVerifier verifier = JWT.require(Algorithm.HMAC256("maClefSecrète")).build();
-            DecodedJWT jwt = verifier.verify(token);
-            String email = jwt.getClaim("email").asString();
-            if(requestContext.getHeaderString("email") == null ||
-                    !requestContext.getHeaderString("email").equalsIgnoreCase(email)
-            ){
-                if(!((PostMatchContainerRequestContext) requestContext).getHttpRequest().getUri().getPath().startsWith("/v1/users"))
+                JWTVerifier verifier = JWT.require(Algorithm.HMAC256(JWTSecret.SECRETKEY)).build();
+                DecodedJWT jwt = verifier.verify(token);
+                String email = jwt.getClaim("email").asString();
+                if (requestContext.getHeaderString("email") == null ||
+                        !requestContext.getHeaderString("email").equalsIgnoreCase(email)
+                ) {
+                    if (!((PostMatchContainerRequestContext) requestContext).getHttpRequest().getUri().getPath().startsWith("/v1/users"))
                         //&& ((PostMatchContainerRequestContext) requestContext).getHttpRequest().getHttpMethod().equalsIgnoreCase("post")))
-                    throw new JwtException("Email transmis incorrect", Response.Status.UNAUTHORIZED);
+                        throw new JwtException("Email transmis incorrect", Response.Status.UNAUTHORIZED);
+                }
+            }catch(Exception e){
+                throw new JwtException("Token invalid.", Response.Status.UNAUTHORIZED);
             }
         }
         else {
